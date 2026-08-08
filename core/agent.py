@@ -1,5 +1,6 @@
 import logging
 import re
+from pathlib import Path
 
 from memory import Database
 from core.context import ContextManager
@@ -11,13 +12,23 @@ from llm.client import LLMClient
 # LOGGING
 # ==========================================================
 
+# Projenin ana klasörünü bul
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# logs klasörünü oluştur
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+# Log dosyasının yolu
+LOG_FILE = LOG_DIR / "agent.log"
+
 logger = logging.getLogger("AetherAgent")
 
 if not logger.handlers:
     logger.setLevel(logging.INFO)
 
     handler = logging.FileHandler(
-        "logs/agent.log",
+        LOG_FILE,
         encoding="utf-8"
     )
 
@@ -56,10 +67,7 @@ class AetherAgent:
         user_message: str,
         context_limit: int = 20
     ) -> str:
-        """
-        Kullanıcı mesajı ve konuşma geçmişinden
-        modele gönderilecek isteği oluşturur.
-        """
+        """Kullanıcı mesajı ve konuşma geçmişinden modele gönderilecek isteği oluşturur."""
 
         context = self.context_manager.build_context(
             conversation_id,
@@ -113,22 +121,16 @@ class AetherAgent:
         """Agent'a yeni bir araç kaydeder."""
 
         if not name:
-            raise ValueError(
-                "Araç adı boş olamaz."
-            )
+            raise ValueError("Araç adı boş olamaz.")
 
         if not callable(tool):
             raise TypeError(
-                f"'{name}' aracı çağrılabilir "
-                "bir fonksiyon olmalıdır."
+                f"'{name}' aracı çağrılabilir bir fonksiyon olmalıdır."
             )
 
         self.tools[name] = tool
 
-        logger.info(
-            "Tool kaydedildi: %s",
-            name
-        )
+        logger.info("Tool kaydedildi: %s", name)
 
     def execute_tool(
         self,
@@ -160,10 +162,7 @@ class AetherAgent:
         return result
 
     def get_tool_descriptions(self) -> str:
-        """
-        Kayıtlı araçların isimlerini ve açıklamalarını
-        modele gönderilecek metne dönüştürür.
-        """
+        """Kayıtlı araçların açıklamalarını modele gönderilecek metne dönüştürür."""
 
         if not self.tools:
             return "Kullanılabilir araç yok."
@@ -181,9 +180,7 @@ class AetherAgent:
             if description:
                 description = description.strip()
             else:
-                description = (
-                    "Açıklama belirtilmemiş."
-                )
+                description = "Açıklama belirtilmemiş."
 
             descriptions.append(
                 f"- {name}: {description}"
@@ -199,10 +196,7 @@ class AetherAgent:
         self,
         expression: str
     ) -> str:
-        """
-        Gemini'nin doğal dilde verdiği matematik ifadesini
-        Calculator'ın anlayabileceği ifadeye dönüştürür.
-        """
+        """Doğal dilde verilen matematik ifadesini Calculator formatına dönüştürür."""
 
         if not expression:
             return expression
@@ -213,14 +207,14 @@ class AetherAgent:
         text = text.replace("÷", "/")
         text = text.replace("−", "-")
 
-        # Türkçe ondalık ayracı.
+        # Türkçe ondalık ayracı
         text = re.sub(
             r"(\d),(\d)",
             r"\1.\2",
             text
         )
 
-        # Zaten doğrudan matematikse bozma.
+        # Zaten matematik ifadesiyse bozma
         if re.fullmatch(
             r"[0-9+\-*/%.()\s]+",
             text
@@ -263,13 +257,9 @@ class AetherAgent:
             first = numbers[0]
             second = numbers[1]
 
-            return (
-                f"{first} "
-                f"{operator_symbol} "
-                f"{second}"
-            )
+            return f"{first} {operator_symbol} {second}"
 
-        # Doğal dili temizle.
+        # Doğal dili temizle
         text = re.sub(
             r"\b(kaç|nedir|hesapla|sonuç|sonucu)\b",
             " ",
@@ -319,9 +309,7 @@ class AetherAgent:
         self,
         response: str
     ) -> dict:
-        """
-        Gemini'nin ReAct cevabını Python sözlüğüne dönüştürür.
-        """
+        """LLM'nin ReAct cevabını Python sözlüğüne dönüştürür."""
 
         result = {
             "action": "none",
@@ -358,10 +346,7 @@ class AetherAgent:
         )
 
         if tool_match:
-
-            result["tool"] = (
-                tool_match.group(1).strip()
-            )
+            result["tool"] = tool_match.group(1).strip()
 
         args_match = re.search(
             r"ARGS:\s*(.*)",
@@ -371,23 +356,18 @@ class AetherAgent:
 
         if args_match:
 
-            args_text = (
-                args_match.group(1).strip()
-            )
+            args_text = args_match.group(1).strip()
 
             if args_text:
-
                 result["args"] = {
                     "expression": args_text
                 }
 
         if result["tool"]:
 
-            result["args"] = (
-                self._prepare_tool_args(
-                    result["tool"],
-                    result["args"]
-                )
+            result["args"] = self._prepare_tool_args(
+                result["tool"],
+                result["args"]
             )
 
         logger.info(
@@ -409,18 +389,14 @@ class AetherAgent:
         user_message: str,
         context_limit: int = 20
     ) -> dict:
-        """Gemini'den ReAct formatında eylem kararı alır."""
+        """LLM'den ReAct formatında eylem kararı alır."""
 
-        context = (
-            self.context_manager.build_context(
-                conversation_id,
-                limit=context_limit
-            )
+        context = self.context_manager.build_context(
+            conversation_id,
+            limit=context_limit
         )
 
-        tool_descriptions = (
-            self.get_tool_descriptions()
-        )
+        tool_descriptions = self.get_tool_descriptions()
 
         prompt = build_react_prompt(
             user_message=user_message,
@@ -436,9 +412,7 @@ class AetherAgent:
             prompt=prompt
         )
 
-        return self.parse_react_response(
-            response
-        )
+        return self.parse_react_response(response)
 
     # ======================================================
     # NORMAL RESPONSE
@@ -566,7 +540,6 @@ kısa ve net cevap ver.
         Kullanıcı mesajını işler.
 
         Akış:
-
         1. Kullanıcı mesajını kaydet.
         2. ReAct ile araç gerekip gerekmediğine karar ver.
         3. Gerekirse aracı çalıştır.
@@ -600,7 +573,7 @@ kısa ve net cevap ver.
                 context_limit=context_limit
             )
 
-        except Exception as error:
+        except Exception:
 
             logger.exception(
                 "ReAct karar aşamasında hata oluştu."
@@ -714,7 +687,7 @@ kısa ve net cevap ver.
             )
 
             response = (
-                f"İşlem tamamlandı fakat sonucu "
+                "İşlem tamamlandı fakat sonucu "
                 f"hazırlarken bir hata oluştu: {error}"
             )
 
