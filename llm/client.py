@@ -4,11 +4,9 @@ from groq import Groq
 
 from config.settings import Config
 
-
-# Sistemin kara kutusunu (Loglama) ayarlıyoruz.
-
+# Streamlit Cloud'da dosyaya log yazmak yerine
+# uygulamanın kendi log sistemini kullanıyoruz.
 logging.basicConfig(
-    filename=Config.LOG_FILE,
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
