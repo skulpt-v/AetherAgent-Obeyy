@@ -3,7 +3,10 @@ import sys
 
 import streamlit as st
 
-# Proje kökü
+# ==========================================================
+# PROJE KÖKÜ
+# ==========================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 if str(BASE_DIR) not in sys.path:
@@ -13,9 +16,8 @@ from memory import Database
 from core.agent import AetherAgent
 from tools.calculator import Calculator
 
+
 LOGO_PATH = BASE_DIR / "assets" / "obeyy_logo.png"
-from core.agent import AetherAgent
-from tools.calculator import Calculator
 
 
 # ==========================================================
@@ -105,7 +107,6 @@ THEMES = {
         "BUBBLE_BORDER": "#27272a",
     },
 
-
     # ------------------------------------------------------
     # AÇIK
     # ------------------------------------------------------
@@ -135,7 +136,6 @@ THEMES = {
 
         "BUBBLE_BORDER": "#d1d1d6",
     },
-
 
     # ------------------------------------------------------
     # MOR
@@ -167,7 +167,6 @@ THEMES = {
         "BUBBLE_BORDER": "#d8c8ed",
     },
 
-
     # ------------------------------------------------------
     # KOYU MOR
     # ------------------------------------------------------
@@ -198,7 +197,6 @@ THEMES = {
         "BUBBLE_BORDER": "#39204d",
     },
 
-
     # ------------------------------------------------------
     # MAVİ
     # ------------------------------------------------------
@@ -228,7 +226,6 @@ THEMES = {
 
         "BUBBLE_BORDER": "#c7d9ee",
     },
-
 
     # ------------------------------------------------------
     # GECE MAVİSİ
@@ -333,772 +330,913 @@ if st.session_state.compact_mode:
 
 st.markdown(
     f"""
-    <style>
+<style>
 
-    /* ======================================================
-       GENEL
-       ====================================================== */
+/* ======================================================
+   GENEL
+   ====================================================== */
 
-    .stApp {{
-        background:
-            radial-gradient(
-                circle at 15% 10%,
-                {RADIAL_1},
-                transparent 30%
-            ),
-            radial-gradient(
-                circle at 85% 90%,
-                {RADIAL_2},
-                transparent 35%
-            ),
-            {APP_BACKGROUND};
+.stApp {{
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            {RADIAL_1},
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 90%,
+            {RADIAL_2},
+            transparent 35%
+        ),
+        {APP_BACKGROUND};
 
-        color: {APP_TEXT};
-        background-attachment: fixed;
-    }}
+    color: {APP_TEXT};
+    background-attachment: fixed;
+}}
 
+
+.main .block-container {{
+    max-width: 1100px;
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+}}
+
+
+.stApp p,
+.stApp label {{
+    color: {APP_TEXT};
+}}
+
+
+[data-testid="stCaptionContainer"] {{
+    color: {SECONDARY_TEXT} !important;
+}}
+
+
+/* ======================================================
+   SIDEBAR
+   ====================================================== */
+
+section[data-testid="stSidebar"] {{
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            {GLOW},
+            transparent 35%
+        ),
+        {SIDEBAR_BACKGROUND};
+
+    border-right: 1px solid {BORDER};
+}}
+
+
+section[data-testid="stSidebar"] button {{
+    border-radius: 10px;
+    border: 1px solid {BORDER};
+    background-color: {BUTTON_BACKGROUND};
+    color: {APP_TEXT};
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.1s ease;
+}}
+
+
+section[data-testid="stSidebar"] button:hover {{
+    background-color: {BUTTON_HOVER};
+    border-color: {ACCENT};
+    color: {APP_TEXT};
+}}
+
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3 {{
+    color: {APP_TEXT} !important;
+}}
+
+
+/* ======================================================
+   LOGO
+   ====================================================== */
+
+div[data-testid="stImage"] img {{
+    border-radius: 18px;
+}}
+
+
+.logo-title {{
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-top: 4px;
+    color: {APP_TEXT} !important;
+}}
+
+
+.logo-subtitle {{
+    color: {SECONDARY_TEXT} !important;
+    font-size: 14px;
+    margin-top: -5px;
+}}
+
+
+/* ======================================================
+   BAŞLIK
+   ====================================================== */
+
+.obeyy-title {{
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 0;
+    color: {APP_TEXT} !important;
+}}
+
+
+.obeyy-subtitle {{
+    color: {SECONDARY_TEXT} !important;
+    font-size: 15px;
+    margin-top: -5px;
+}}
+
+
+/* ======================================================
+   CHAT
+   ====================================================== */
+
+div[data-testid="stChatMessage"] {{
+    background: transparent !important;
+    border: none !important;
+
+    width: 100%;
+    display: flex !important;
+
+    align-items: flex-start;
+
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+    padding: 0 !important;
+}}
+
+
+/* ======================================================
+   ASSISTANT
+   ====================================================== */
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-assistant"]
+) {{
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}}
+
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-assistant"]
+)
+[data-testid="stChatMessageContent"] {{
+
+    background: {ASSISTANT_BUBBLE} !important;
+    color: {ASSISTANT_BUBBLE_TEXT} !important;
+
+    border: 1px solid {BUBBLE_BORDER};
+    border-radius: 18px;
+
+    padding: 13px 17px;
+
+    max-width: min(78%, 780px);
+
+    margin-left: 10px !important;
+    margin-right: 0 !important;
+
+    box-shadow:
+        0 3px 16px rgba(0, 0, 0, 0.08);
+
+    overflow-wrap: anywhere;
+}}
+
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-assistant"]
+)
+[data-testid="stChatMessageContent"] p,
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-assistant"]
+)
+[data-testid="stChatMessageContent"] li,
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-assistant"]
+)
+[data-testid="stChatMessageContent"] strong,
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-assistant"]
+)
+[data-testid="stChatMessageContent"] em {{
+    color: {ASSISTANT_BUBBLE_TEXT} !important;
+}}
+
+
+/* ======================================================
+   USER
+   ====================================================== */
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-user"]
+) {{
+    flex-direction: row-reverse !important;
+    justify-content: flex-start !important;
+}}
+
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-user"]
+)
+[data-testid="stChatMessageContent"] {{
+
+    background: {USER_BUBBLE} !important;
+    color: {USER_BUBBLE_TEXT} !important;
+
+    border: 1px solid {BUBBLE_BORDER};
+    border-radius: 18px;
+
+    padding: 13px 17px;
+
+    max-width: min(78%, 780px);
+
+    margin-right: 10px !important;
+    margin-left: 0 !important;
+
+    box-shadow:
+        0 3px 16px rgba(0, 0, 0, 0.08);
+
+    overflow-wrap: anywhere;
+}}
+
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-user"]
+)
+[data-testid="stChatMessageContent"] p,
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-user"]
+)
+[data-testid="stChatMessageContent"] li,
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-user"]
+)
+[data-testid="stChatMessageContent"] strong,
+
+div[data-testid="stChatMessage"]:has(
+    [data-testid="chatAvatarIcon-user"]
+)
+[data-testid="stChatMessageContent"] em {{
+    color: {USER_BUBBLE_TEXT} !important;
+}}
+
+
+/* ======================================================
+   AVATAR
+   ====================================================== */
+
+div[data-testid="stChatMessage"]
+[data-testid="chatAvatarIcon-user"],
+div[data-testid="stChatMessage"]
+[data-testid="chatAvatarIcon-assistant"] {{
+    flex-shrink: 0;
+}}
+
+
+/* ======================================================
+   CODE
+   ====================================================== */
+
+div[data-testid="stChatMessageContent"] pre {{
+    border-radius: 10px;
+    overflow-x: auto;
+    max-width: 100%;
+}}
+
+
+div[data-testid="stChatMessageContent"] code {{
+    border-radius: 5px;
+}}
+
+
+/* ======================================================
+   CHAT INPUT
+   ====================================================== */
+
+div[data-testid="stChatInput"] {{
+    border-radius: 15px;
+    border: 1px solid {BORDER};
+    background-color: {INPUT_BACKGROUND};
+}}
+
+
+div[data-testid="stChatInput"] textarea {{
+    color: {INPUT_TEXT} !important;
+    background-color: {INPUT_BACKGROUND} !important;
+}}
+
+
+div[data-testid="stChatInput"] textarea::placeholder {{
+    color: {SECONDARY_TEXT} !important;
+}}
+
+
+/* ======================================================
+   INPUTLAR
+   ====================================================== */
+
+input,
+textarea {{
+    color: {INPUT_TEXT} !important;
+    background-color: {INPUT_BACKGROUND} !important;
+    border-color: {BORDER} !important;
+}}
+
+
+input::placeholder,
+textarea::placeholder {{
+    color: {SECONDARY_TEXT} !important;
+}}
+
+
+/* ======================================================
+   SELECTBOX
+   ====================================================== */
+
+div[data-baseweb="select"] > div {{
+    background-color: {INPUT_BACKGROUND} !important;
+    border-color: {BORDER} !important;
+    color: {INPUT_TEXT} !important;
+}}
+
+
+div[data-baseweb="select"] span {{
+    color: {INPUT_TEXT} !important;
+}}
+
+
+/* ======================================================
+   BUTONLAR
+   ====================================================== */
+
+.stButton > button {{
+    border-radius: 10px;
+
+    border: 1px solid {BORDER};
+
+    background-color: {BUTTON_BACKGROUND};
+
+    color: {APP_TEXT};
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.1s ease;
+
+    min-height: 42px;
+}}
+
+
+.stButton > button:hover {{
+    background-color: {BUTTON_HOVER};
+    border-color: {ACCENT};
+    color: {APP_TEXT};
+
+    transform: translateY(-1px);
+}}
+
+
+/* ======================================================
+   TOGGLE
+   ====================================================== */
+
+div[data-testid="stToggle"] label {{
+    color: {APP_TEXT} !important;
+}}
+
+
+/* ======================================================
+   SLIDER
+   ====================================================== */
+
+div[data-testid="stSlider"] label {{
+    color: {APP_TEXT} !important;
+}}
+
+
+/* ======================================================
+   KARTLAR
+   ====================================================== */
+
+.memory-card {{
+    padding: 18px;
+    margin-bottom: 14px;
+
+    border: 1px solid {BORDER};
+    border-radius: 14px;
+
+    background: {CARD_BACKGROUND};
+}}
+
+
+.settings-card {{
+    padding: 20px;
+
+    border: 1px solid {BORDER};
+    border-radius: 16px;
+
+    background: {CARD_BACKGROUND};
+
+    margin-bottom: 16px;
+}}
+
+
+.settings-card b {{
+    color: {APP_TEXT} !important;
+}}
+
+
+/* ======================================================
+   ALERT
+   ====================================================== */
+
+[data-testid="stAlert"] {{
+    border-radius: 12px;
+}}
+
+
+/* ======================================================
+   DIVIDER
+   ====================================================== */
+
+hr {{
+    border-color: {BORDER} !important;
+}}
+
+
+/* ======================================================
+   LINK
+   ====================================================== */
+
+a {{
+    color: {ACCENT} !important;
+}}
+
+
+/* ======================================================
+   COMPACT
+   ====================================================== */
+
+{compact_css}
+
+
+/* ======================================================
+   MOBİL ARAYÜZ
+   ====================================================== */
+
+@media only screen and (max-width: 768px) {{
 
     .main .block-container {{
-        max-width: 1100px;
-        padding-top: 2rem;
-        padding-bottom: 5rem;
+        max-width: 100% !important;
+        width: 100% !important;
+
+        padding-top: 0.8rem !important;
+        padding-left: 0.55rem !important;
+        padding-right: 0.55rem !important;
+        padding-bottom: 6rem !important;
+
+        overflow-x: hidden !important;
+    }}
+
+    .stApp {{
+        overflow-x: hidden !important;
     }}
 
 
-    .stApp p,
-    .stApp label {{
-        color: {APP_TEXT};
-    }}
-
-
-    [data-testid="stCaptionContainer"] {{
-        color: {SECONDARY_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       SIDEBAR
-       ====================================================== */
+    /* SIDEBAR */
 
     section[data-testid="stSidebar"] {{
-        background:
-            radial-gradient(
-                circle at 50% 0%,
-                {GLOW},
-                transparent 35%
-            ),
-            {SIDEBAR_BACKGROUND};
-
-        border-right: 1px solid {BORDER};
+        width: 82vw !important;
+        max-width: 340px !important;
     }}
 
 
-    section[data-testid="stSidebar"] button {{
-        border-radius: 10px;
-        border: 1px solid {BORDER};
-        background-color: {BUTTON_BACKGROUND};
-        color: {APP_TEXT};
-
-        transition:
-            background-color 0.15s ease,
-            border-color 0.15s ease,
-            transform 0.1s ease;
-    }}
-
-
-    section[data-testid="stSidebar"] button:hover {{
-        background-color: {BUTTON_HOVER};
-        border-color: {ACCENT};
-        color: {APP_TEXT};
-    }}
-
-
-    section[data-testid="stSidebar"] h1,
-    section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] h3 {{
-        color: {APP_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       LOGO
-       ====================================================== */
-
-    div[data-testid="stImage"] img {{
-        border-radius: 18px;
-    }}
-
-
-    .logo-title {{
-        font-size: 32px;
-        font-weight: 800;
-        letter-spacing: -1.5px;
-        margin-top: 4px;
-        color: {APP_TEXT} !important;
-    }}
-
-
-    .logo-subtitle {{
-        color: {SECONDARY_TEXT} !important;
-        font-size: 14px;
-        margin-top: -5px;
-    }}
-
-
-    /* ======================================================
-       BAŞLIK
-       ====================================================== */
+    /* BAŞLIK */
 
     .obeyy-title {{
-        font-size: 42px;
-        font-weight: 800;
-        letter-spacing: -2px;
-        margin-bottom: 0;
-        color: {APP_TEXT} !important;
+        font-size: 29px !important;
+        letter-spacing: -1.2px !important;
+        word-break: normal !important;
     }}
-
 
     .obeyy-subtitle {{
-        color: {SECONDARY_TEXT} !important;
-        font-size: 15px;
-        margin-top: -5px;
+        font-size: 12px !important;
     }}
 
 
-    /* ======================================================
-       CHAT
-       ====================================================== */
+    /* LOGO */
+
+    div[data-testid="stImage"] img {{
+        max-width: 100% !important;
+        height: auto !important;
+    }}
+
+
+    /* CHAT MESAJI */
 
     div[data-testid="stChatMessage"] {{
-        background: transparent !important;
-        border: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
 
-        width: 100%;
-        display: flex !important;
-
-        align-items: flex-start;
-
-        margin-top: 12px;
-        margin-bottom: 12px;
+        margin-top: 7px !important;
+        margin-bottom: 7px !important;
 
         padding: 0 !important;
+
+        overflow: hidden !important;
     }}
 
 
-    /* ======================================================
-       ASSISTANT
-       ====================================================== */
+    /* CHAT MESSAGE İÇ YAPI */
 
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-assistant"]
-    ) {{
-        flex-direction: row !important;
-        justify-content: flex-start !important;
+    div[data-testid="stChatMessage"] > div {{
+        min-width: 0 !important;
+        max-width: 100% !important;
     }}
 
+
+    /* ASİSTAN BALONU */
 
     div[data-testid="stChatMessage"]:has(
         [data-testid="chatAvatarIcon-assistant"]
     )
     [data-testid="stChatMessageContent"] {{
 
-        background: {ASSISTANT_BUBBLE} !important;
-        color: {ASSISTANT_BUBBLE_TEXT} !important;
+        width: auto !important;
+        max-width: calc(100vw - 65px) !important;
 
-        border: 1px solid {BUBBLE_BORDER};
-        border-radius: 18px;
+        min-width: 0 !important;
 
-        padding: 13px 17px;
-
-        max-width: min(78%, 780px);
-
-        margin-left: 10px !important;
+        margin-left: 6px !important;
         margin-right: 0 !important;
 
-        box-shadow:
-            0 3px 16px rgba(0, 0, 0, 0.08);
+        padding: 10px 12px !important;
 
-        overflow-wrap: anywhere;
+        border-radius: 15px !important;
+
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+
+        overflow: hidden !important;
+        overflow-wrap: anywhere !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
     }}
 
 
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-assistant"]
-    )
-    [data-testid="stChatMessageContent"] p,
-
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-assistant"]
-    )
-    [data-testid="stChatMessageContent"] li,
-
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-assistant"]
-    )
-    [data-testid="stChatMessageContent"] strong,
-
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-assistant"]
-    )
-    [data-testid="stChatMessageContent"] em {{
-        color: {ASSISTANT_BUBBLE_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       USER
-       ====================================================== */
-
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-user"]
-    ) {{
-        flex-direction: row-reverse !important;
-        justify-content: flex-start !important;
-    }}
-
+    /* KULLANICI BALONU */
 
     div[data-testid="stChatMessage"]:has(
         [data-testid="chatAvatarIcon-user"]
     )
     [data-testid="stChatMessageContent"] {{
 
-        background: {USER_BUBBLE} !important;
-        color: {USER_BUBBLE_TEXT} !important;
+        width: auto !important;
+        max-width: calc(100vw - 65px) !important;
 
-        border: 1px solid {BUBBLE_BORDER};
-        border-radius: 18px;
+        min-width: 0 !important;
 
-        padding: 13px 17px;
-
-        max-width: min(78%, 780px);
-
-        margin-right: 10px !important;
+        margin-right: 6px !important;
         margin-left: 0 !important;
 
-        box-shadow:
-            0 3px 16px rgba(0, 0, 0, 0.08);
+        padding: 10px 12px !important;
 
-        overflow-wrap: anywhere;
+        border-radius: 15px !important;
+
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+
+        overflow: hidden !important;
+        overflow-wrap: anywhere !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
     }}
 
 
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-user"]
-    )
-    [data-testid="stChatMessageContent"] p,
+    /* AVATAR */
 
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-user"]
-    )
-    [data-testid="stChatMessageContent"] li,
-
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-user"]
-    )
-    [data-testid="stChatMessageContent"] strong,
-
-    div[data-testid="stChatMessage"]:has(
-        [data-testid="chatAvatarIcon-user"]
-    )
-    [data-testid="stChatMessageContent"] em {{
-        color: {USER_BUBBLE_TEXT} !important;
+    div[data-testid="stChatMessage"] > div:first-child {{
+        width: 30px !important;
+        min-width: 30px !important;
+        max-width: 30px !important;
     }}
 
 
-    /* ======================================================
-       AVATAR
-       ====================================================== */
+    /* NORMAL METİN */
 
-    div[data-testid="stChatMessage"]
-    [data-testid="chatAvatarIcon-user"],
-    div[data-testid="stChatMessage"]
-    [data-testid="chatAvatarIcon-assistant"] {{
-        flex-shrink: 0;
+    div[data-testid="stChatMessageContent"] p,
+    div[data-testid="stChatMessageContent"] li,
+    div[data-testid="stChatMessageContent"] span {{
+
+        max-width: 100% !important;
+
+        overflow-wrap: anywhere !important;
+        word-wrap: break-word !important;
     }}
 
 
-    /* ======================================================
-       CODE
-       ====================================================== */
+    /* KOD BLOKLARI */
 
     div[data-testid="stChatMessageContent"] pre {{
-        border-radius: 10px;
-        overflow-x: auto;
-        max-width: 100%;
+
+        display: block !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        white-space: pre !important;
+
+        font-size: 11px !important;
+        line-height: 1.45 !important;
+
+        padding: 10px !important;
+
+        border-radius: 9px !important;
+
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }}
 
+
+    /* INLINE CODE */
 
     div[data-testid="stChatMessageContent"] code {{
-        border-radius: 5px;
+
+        max-width: 100% !important;
+
+        font-size: 11px !important;
+
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
     }}
 
 
-    /* ======================================================
-       CHAT INPUT
-       ====================================================== */
+    /* MARKDOWN CONTAINER */
+
+    div[data-testid="stChatMessageContent"] > div {{
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }}
+
+
+    /* TABLOLAR */
+
+    div[data-testid="stChatMessageContent"] table {{
+
+        display: block !important;
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        overflow-x: auto !important;
+
+        white-space: nowrap !important;
+    }}
+
+
+    /* CHAT INPUT */
 
     div[data-testid="stChatInput"] {{
-        border-radius: 15px;
-        border: 1px solid {BORDER};
-        background-color: {INPUT_BACKGROUND};
+
+        width: calc(100% - 0.6rem) !important;
+
+        margin-left: 0.3rem !important;
+        margin-right: 0.3rem !important;
+
+        border-radius: 17px !important;
+
+        box-sizing: border-box !important;
     }}
 
 
     div[data-testid="stChatInput"] textarea {{
-        color: {INPUT_TEXT} !important;
-        background-color: {INPUT_BACKGROUND} !important;
+
+        font-size: 15px !important;
+
+        min-height: 46px !important;
+
+        max-width: 100% !important;
     }}
 
 
-    div[data-testid="stChatInput"] textarea::placeholder {{
-        color: {SECONDARY_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       INPUTLAR
-       ====================================================== */
-
-    input,
-    textarea {{
-        color: {INPUT_TEXT} !important;
-        background-color: {INPUT_BACKGROUND} !important;
-        border-color: {BORDER} !important;
-    }}
-
-
-    input::placeholder,
-    textarea::placeholder {{
-        color: {SECONDARY_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       SELECTBOX
-       ====================================================== */
-
-    div[data-baseweb="select"] > div {{
-        background-color: {INPUT_BACKGROUND} !important;
-        border-color: {BORDER} !important;
-        color: {INPUT_TEXT} !important;
-    }}
-
-
-    div[data-baseweb="select"] span {{
-        color: {INPUT_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       BUTONLAR
-       ====================================================== */
+    /* BUTONLAR */
 
     .stButton > button {{
-        border-radius: 10px;
 
-        border: 1px solid {BORDER};
+        min-height: 44px !important;
 
-        background-color: {BUTTON_BACKGROUND};
+        font-size: 14px !important;
 
-        color: {APP_TEXT};
+        border-radius: 11px !important;
 
-        transition:
-            background-color 0.15s ease,
-            border-color 0.15s ease,
-            transform 0.1s ease;
-
-        min-height: 42px;
+        max-width: 100% !important;
     }}
 
 
-    .stButton > button:hover {{
-        background-color: {BUTTON_HOVER};
-        border-color: {ACCENT};
-        color: {APP_TEXT};
+    /* SELECTBOX */
 
-        transform: translateY(-1px);
+    div[data-baseweb="select"] {{
+
+        min-height: 44px !important;
+
+        max-width: 100% !important;
     }}
 
 
-    /* ======================================================
-       TOGGLE
-       ====================================================== */
-
-    div[data-testid="stToggle"] label {{
-        color: {APP_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       SLIDER
-       ====================================================== */
-
-    div[data-testid="stSlider"] label {{
-        color: {APP_TEXT} !important;
-    }}
-
-
-    /* ======================================================
-       KARTLAR
-       ====================================================== */
-
-    .memory-card {{
-        padding: 18px;
-        margin-bottom: 14px;
-
-        border: 1px solid {BORDER};
-        border-radius: 14px;
-
-        background: {CARD_BACKGROUND};
-    }}
-
+    /* SETTINGS */
 
     .settings-card {{
-        padding: 20px;
+
+        padding: 14px !important;
+
+        border-radius: 13px !important;
+
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+    }}
+
+
+    /* MEMORY */
+
+    .memory-card {{
+
+        padding: 13px !important;
+
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+    }}
+
+
+    /* COLUMNS */
+
+    div[data-testid="stHorizontalBlock"] {{
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        gap: 0.4rem !important;
+
+        overflow: hidden !important;
+    }}
+
+
+    /* MOBİL ALT NAVİGASYON */
+
+    .mobile-nav {{
+
+        position: fixed;
+
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+
+        height: 56px;
+
+        z-index: 999999;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: space-around;
 
         border: 1px solid {BORDER};
-        border-radius: 16px;
 
-        background: {CARD_BACKGROUND};
+        border-radius: 17px;
 
-        margin-bottom: 16px;
+        background:
+            linear-gradient(
+                180deg,
+                #111111,
+                #0b0b0b
+            );
+
+        box-shadow:
+            0 10px 35px rgba(0,0,0,0.30);
+
+        backdrop-filter: blur(20px);
+
+        overflow: hidden;
     }}
 
 
-    .settings-card b {{
-        color: {APP_TEXT} !important;
+    .mobile-nav-item {{
+
+        flex: 1;
+
+        min-width: 0;
+
+        height: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        color: #999999;
+
+        font-size: 10px;
+
+        text-decoration: none;
+
+        gap: 2px;
+
+        overflow: hidden;
     }}
 
 
-    /* ======================================================
-       ALERT
-       ====================================================== */
+    .mobile-nav-item.active {{
 
-    [data-testid="stAlert"] {{
-        border-radius: 12px;
+        color: #ffffff;
+
+        font-weight: 700;
     }}
 
 
-    /* ======================================================
-       DIVIDER
-       ====================================================== */
+    .mobile-nav-icon {{
 
-    hr {{
-        border-color: {BORDER} !important;
+        font-size: 18px;
+
+        line-height: 19px;
+    }}
+}}
+
+
+/* ======================================================
+   MOBİLDE YATAY TAŞMAYI TAMAMEN ENGELLE
+   ====================================================== */
+
+@media only screen and (max-width: 768px) {{
+
+    html,
+    body {{
+
+        max-width: 100% !important;
+
+        overflow-x: hidden !important;
     }}
 
+    iframe,
+    video,
+    img,
+    svg {{
 
-    /* ======================================================
-       LINK
-       ====================================================== */
-
-    a {{
-        color: {ACCENT} !important;
+        max-width: 100% !important;
     }}
 
+    pre,
+    code {{
 
-    /* ======================================================
-       COMPACT
-       ====================================================== */
-
-    {compact_css}
-
-
-    /* ======================================================
-       MOBİL ARAYÜZ
-       ====================================================== */
-
-    @media only screen and (max-width: 768px) {{
-
-        /* ----------------------------------------------
-           ANA ALAN
-           ---------------------------------------------- */
-
-        .main .block-container {{
-            max-width: 100% !important;
-
-            padding-top: 0.8rem !important;
-            padding-left: 0.75rem !important;
-            padding-right: 0.75rem !important;
-            padding-bottom: 6rem !important;
-        }}
-
-
-        /* ----------------------------------------------
-           SIDEBAR
-           ---------------------------------------------- */
-
-        section[data-testid="stSidebar"] {{
-            width: 82vw !important;
-            max-width: 340px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           BAŞLIK
-           ---------------------------------------------- */
-
-        .obeyy-title {{
-            font-size: 29px !important;
-            letter-spacing: -1.2px !important;
-        }}
-
-
-        .obeyy-subtitle {{
-            font-size: 12px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           HEADER LOGO
-           ---------------------------------------------- */
-
-        div[data-testid="stImage"] img {{
-            max-width: 100%;
-        }}
-
-
-        /* ----------------------------------------------
-           CHAT
-           ---------------------------------------------- */
-
-        div[data-testid="stChatMessage"] {{
-            margin-top: 8px !important;
-            margin-bottom: 8px !important;
-
-            width: 100% !important;
-        }}
-
-
-        /* ----------------------------------------------
-           CHAT BALONLARI
-           ---------------------------------------------- */
-
-        div[data-testid="stChatMessage"]:has(
-            [data-testid="chatAvatarIcon-assistant"]
-        )
-        [data-testid="stChatMessageContent"] {{
-
-            max-width: calc(100% - 45px) !important;
-
-            margin-left: 7px !important;
-
-            padding: 11px 13px !important;
-
-            border-radius: 16px !important;
-
-            font-size: 14px !important;
-
-            line-height: 1.5 !important;
-        }}
-
-
-        div[data-testid="stChatMessage"]:has(
-            [data-testid="chatAvatarIcon-user"]
-        )
-        [data-testid="stChatMessageContent"] {{
-
-            max-width: calc(100% - 45px) !important;
-
-            margin-right: 7px !important;
-
-            padding: 11px 13px !important;
-
-            border-radius: 16px !important;
-
-            font-size: 14px !important;
-
-            line-height: 1.5 !important;
-        }}
-
-
-        /* ----------------------------------------------
-           AVATAR
-           ---------------------------------------------- */
-
-        div[data-testid="stChatMessage"] > div:first-child {{
-            width: 32px !important;
-            min-width: 32px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           CODE BLOKLARI
-           ---------------------------------------------- */
-
-        div[data-testid="stChatMessageContent"] pre {{
-            max-width: 100% !important;
-
-            font-size: 12px !important;
-
-            white-space: pre-wrap !important;
-            word-break: break-word !important;
-        }}
-
-
-        div[data-testid="stChatMessageContent"] code {{
-            word-break: break-word !important;
-        }}
-
-
-        /* ----------------------------------------------
-           CHAT INPUT
-           ---------------------------------------------- */
-
-        div[data-testid="stChatInput"] {{
-            width: calc(100% - 1rem) !important;
-
-            margin-left: 0.5rem !important;
-            margin-right: 0.5rem !important;
-
-            border-radius: 18px !important;
-        }}
-
-
-        div[data-testid="stChatInput"] textarea {{
-            font-size: 15px !important;
-
-            min-height: 46px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           BUTONLAR
-           ---------------------------------------------- */
-
-        .stButton > button {{
-            min-height: 46px !important;
-
-            font-size: 14px !important;
-
-            border-radius: 12px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           SELECTBOX
-           ---------------------------------------------- */
-
-        div[data-baseweb="select"] {{
-            min-height: 46px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           SETTINGS
-           ---------------------------------------------- */
-
-        .settings-card {{
-            padding: 15px !important;
-
-            border-radius: 14px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           MEMORY
-           ---------------------------------------------- */
-
-        .memory-card {{
-            padding: 14px !important;
-        }}
-
-
-        /* ----------------------------------------------
-           COLUMNS
-           ---------------------------------------------- */
-
-        div[data-testid="stHorizontalBlock"] {{
-            gap: 0.5rem !important;
-        }}
-
-
-        /* ----------------------------------------------
-           MOBİL ALT NAVİGASYON
-           ---------------------------------------------- */
-
-        .mobile-nav {{
-            position: fixed;
-
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-
-            height: 58px;
-
-            z-index: 999999;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: space-around;
-
-            border: 1px solid {BORDER};
-
-            border-radius: 18px;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    {CARD_BACKGROUND},
-                    {INPUT_BACKGROUND}
-                );
-
-            box-shadow:
-                0 10px 35px rgba(0,0,0,0.30);
-
-            backdrop-filter: blur(20px);
-        }}
-
-
-        .mobile-nav-item {{
-            flex: 1;
-
-            height: 100%;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            justify-content: center;
-
-            color: {SECONDARY_TEXT};
-
-            font-size: 11px;
-
-            text-decoration: none;
-
-            gap: 2px;
-        }}
-
-
-        .mobile-nav-item.active {{
-            color: {ACCENT};
-            font-weight: 700;
-        }}
-
-
-        .mobile-nav-icon {{
-            font-size: 19px;
-            line-height: 20px;
-        }}
+        max-width: 100% !important;
     }}
+}}
 
 
-    /* ======================================================
-       MASAÜSTÜNDE MOBİL NAV GİZLİ
-       ====================================================== */
+/* ======================================================
+   MASAÜSTÜNDE MOBİL NAV GİZLİ
+   ====================================================== */
 
-    @media only screen and (min-width: 769px) {{
-        .mobile-nav {{
-            display: none !important;
-        }}
+@media only screen and (min-width: 769px) {{
+
+    .mobile-nav {{
+        display: none !important;
     }}
+}}
 
-    </style>
-    """,
+</style>
+""",
     unsafe_allow_html=True,
 )
 
@@ -1902,7 +2040,6 @@ if not messages:
         "Sana nasıl yardımcı olabilirim?"
     )
 
-
 else:
 
     for message in messages:
@@ -2010,4 +2147,3 @@ if user_message:
 
 
     st.rerun()
-
