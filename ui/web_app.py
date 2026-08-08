@@ -1,8 +1,19 @@
 from pathlib import Path
+import sys
 
 import streamlit as st
 
+# Proje kökü
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 from memory import Database
+from core.agent import AetherAgent
+from tools.calculator import Calculator
+
+LOGO_PATH = BASE_DIR / "assets" / "obeyy_logo.png"
 from core.agent import AetherAgent
 from tools.calculator import Calculator
 
@@ -10,9 +21,6 @@ from tools.calculator import Calculator
 # ==========================================================
 # SAYFA AYARLARI
 # ==========================================================
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-LOGO_PATH = BASE_DIR / "assets" / "obeyy_logo.png"
 
 st.set_page_config(
     page_title="Obeyy",
